@@ -1,7 +1,7 @@
 {
   "name": "employee-tracker",
   "version": "1.0.0",
-  "description": "- [Built With](#built-with) - [Installation](#instalaltion) - [Usage](#usage) - [Tests](#tests) - [Walkthrough](#walkthrough) - [Contribution](#contribution) ## Built With ## Installation ## Usage ## Tests ## Walkthrough ## Contribution",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
