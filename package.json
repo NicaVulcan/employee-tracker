@@ -1,0 +1,24 @@
+{
+  "name": "employee-tracker",
+  "version": "1.0.0",
+  "description": "- [Built With](#built-with) - [Installation](#instalaltion) - [Usage](#usage) - [Tests](#tests) - [Walkthrough](#walkthrough) - [Contribution](#contribution) ## Built With ## Installation ## Usage ## Tests ## Walkthrough ## Contribution",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NicaVulcan/employee-tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NicaVulcan/employee-tracker/issues"
+  },
+  "homepage": "https://github.com/NicaVulcan/employee-tracker#readme",
+  "dependencies": {
+    "inquirer": "^8.2.0",
+    "mysql2": "^2.3.3"
+  }
+}
