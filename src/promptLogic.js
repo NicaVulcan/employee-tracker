@@ -1,9 +1,9 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
-const db = require("../db/connection");
 const appName = require("./appName");
+const deptsTable = require("../queries/departmentQueries");
 
-const viewDepts = () => {return console.log("you chose to view all departments")};
+viewDepts = () => {return deptsTable()};
 const viewRoles = () => {return console.log("you chose to view all roles")};
 const viewStaff = () => {return console.log("you chose to view all staff")};
 const addDept = () => {return console.log("you chose to add a department")};
@@ -11,9 +11,9 @@ const addRole = () => {return console.log("you chose to add a role")};
 const addStaff = () => {return console.log("you chose to add an employee")};
 const updateRole = () => {return console.log("you chose to update an employee's role")};
 
+console.log(appName);
 
 const promptApp = () => {
-    console.log(appName);
     return inquirer
         .prompt([
             {
