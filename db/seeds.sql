@@ -1,3 +1,5 @@
+SOURCE db/schema.sql;
+
 -- Departments table values
 INSERT INTO departments (department_name)
 VALUES

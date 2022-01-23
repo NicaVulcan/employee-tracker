@@ -2,7 +2,7 @@ const inquirer = require("inquirer");
 const db = require("../db/connection");
 const [deptsTable, newDept] = require("../queries/departmentQueries");
 const [rolesTable, newRole] = require("../queries/rolesQueries");
-const [staffTable, newStaff]= require("../queries/employeesQueries");
+const [staffTable, newStaff, updateEmp] = require("../queries/employeesQueries");
 
 // Show table of departments
 const viewDepts = () => {
@@ -35,26 +35,11 @@ const addDept = () => {
             }
         ])
         .then(answer => {
-            const sql = `
-            INSERT INTO departments (department_name)
-            VALUES (?);`;
-            db.query(sql, answer.deptName, (err, rows) => {
-                if (err) {
-                    throw err;
-                }
-                const sql2 = `SELECT * FROM departments`;
-                db.query(sql2, (err, rows) => {
-                    if (err) {
-                        throw err;
-                    }
-                    console.log(`New department, ${answer.deptName}, has been added!`)
-                    console.table(rows);
-                });
-            })  
-    });
+            newDept(answer.deptName);
+        });
 };
 
-// Add new role
+// Answer options for adding new role's department
 const deptList = () => {
     let deptArr = [];
     db.query(`SELECT department_name FROM departments`, (err, res) => {
@@ -65,6 +50,7 @@ const deptList = () => {
     return deptArr;
 };
 
+// Add new role
 const addRole = () => {
     return inquirer
         .prompt([
@@ -108,7 +94,7 @@ const addRole = () => {
         });
 };
 
-// add an employee
+// Answer options for adding new employee's role, and updating employee's role
 const roleList = () => {
     let roleArr = [];
     db.query(`SELECT title FROM roles`, (err, res) => {
@@ -118,16 +104,19 @@ const roleList = () => {
     });
     return roleArr;
 };
-const mgrList = () => {
-    let mgrArr = [];
+
+// Answer options for adding new employee's manager, and for selecting employee to update
+const empList = () => {
+    let empArr = [];
     db.query(`SELECT first_name FROM employees`, (err, res) => {
         for (let i = 0; i < res.length; i++) {
-            mgrArr.push(res[i].first_name);
+            empArr.push(res[i].first_name);
         }
     });
-    return mgrArr;
+    return empArr;
 };
 
+// Add an employee
 const addStaff = () => {
     return inquirer
         .prompt([
@@ -165,7 +154,7 @@ const addStaff = () => {
                 type: "list",
                 name: "mgr",
                 message: "New employee's manager:",
-                choices: mgrList()
+                choices: empList()
             }
         ])
         .then(answers => {
@@ -177,7 +166,25 @@ const addStaff = () => {
         });
 };
 
-const updateRole = () => { return console.log("you chose to update an employee's role") };
+// Update employee's role
+const updateRole = () => {
+    // return inquirer
+    //     .prompt([
+    //         {
+    //             type: "list",
+    //             name: "emp",
+    //             message: "Employee to update:",
+    //             choices: empList()
+    //         },
+    //         {
+    //             type: "list",
+    //             name: "role",
+    //             message: "Employee's new title:",
+    //             choices: roleList()
+    //         }
+    //     ])
+    return updateEmp("Dwight", "Regional Manager");
+};
 
 const promptApp = () => {
     return inquirer

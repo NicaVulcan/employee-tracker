@@ -38,9 +38,25 @@ const newStaff = (fName, lName, role, mgr) => {
 };
 
 // Update employee: select employee -> update role
-let updateEmp = `
-    UPDATE employees
-    SET role_id = ? 
-    WHERE id = ?`;
-
-module.exports = [staffTable, newStaff];
+const updateEmp = (emp, role) => {
+    const sql =`
+        UPDATE employees
+        SET role_id = (SELECT id FROM roles WHERE title = ?) 
+        WHERE first_name = ?`;
+    db.query(sql, [role, emp], (err, result) => {
+        if(err) {throw err;};
+        console.log(`${emp}'s role has been updated to ${role};`);
+    });
+    const sql2 = `
+        SELECT employees.id, employees.first_name, employees.last_name roles.title
+        FROM employees
+        LEFT JOIN roles
+        ON employees.role_id = roles.id
+        WHERE employees.first_name = ?;`
+    db.query(sql2, emp, (err, rows) => {
+        if (err) {throw err;};
+        console.table(rows);
+    })
+    
+}
+module.exports = [staffTable, newStaff, updateEmp];
