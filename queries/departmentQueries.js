@@ -1,7 +1,5 @@
 const db = require("../db/connection");
-// const promptApp = require("../src/promptLogic")
-// import {promptApp} from "../src/promptLogic";
-// const promptApp = require("../app");
+const inquirer = require("inquirer");
 
 // View Departments table: dept id and dept names
 const deptsTable = () => {
@@ -13,27 +11,47 @@ const deptsTable = () => {
         }
         console.table(rows);
     });
-    // promptApp();
 };
 
 // Add dept: enter dept name
 const newDept = (param) => {
-    const sql = `
-    INSERT INTO departments (department_name)
-    VALUES (?);`;
-    db.query(sql, param, (err, rows) => {
-        if (err) {
-            throw err;
+    return inquirer
+    .prompt([
+        {
+            type: "input",
+            name: "deptName",
+            message: "New Department Name:",
+            validate: input => {
+                if (input) {
+                    return true;
+                } else {
+                    console.log("Please enter new department name!");
+                    return false;
+                }
+            }
         }
-        const sql2 = `SELECT * FROM departments`;
-        db.query(sql2, (err, rows) => {
+    ])
+    .then(answer => {
+
+        const sql = `
+        INSERT INTO departments (department_name)
+        VALUES (?);`;
+        const param = answer.deptName;
+
+        db.query(sql, param, (err, rows) => {
             if (err) {
                 throw err;
             }
-            console.log(`New department, ${param}, has been added!`)
-            console.table(rows);
+            const sql2 = `SELECT * FROM departments`;
+            db.query(sql2, (err, rows) => {
+                if (err) {
+                    throw err;
+                }
+                console.log(`New department, ${param}, has been added!`)
+                console.table(rows);
+                return;
+            });
         });
-
     });
 };
     
