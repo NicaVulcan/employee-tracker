@@ -1,5 +1,7 @@
 const db = require("../db/connection");
-const promptApp = require("../src/promptLogic")
+// const promptApp = require("../src/promptLogic")
+// import {promptApp} from "../src/promptLogic";
+// const promptApp = require("../app");
 
 // View Departments table: dept id and dept names
 const deptsTable = () => {
@@ -7,18 +9,33 @@ const deptsTable = () => {
 
     db.query(sql, (err, rows) => {
         if (err) {
-            res.status(500).json({ error: err.message });
-            return;
+            throw err;
         }
         console.table(rows);
-
     });
+    // promptApp();
 };
 
 // Add dept: enter dept name
-let addDept = `
+const newDept = (param) => {
+    const sql = `
     INSERT INTO departments (department_name)
-    VALUES (?)`;
+    VALUES (?);`;
+    db.query(sql, param, (err, rows) => {
+        if (err) {
+            throw err;
+        }
+        const sql2 = `SELECT * FROM departments`;
+        db.query(sql2, (err, rows) => {
+            if (err) {
+                throw err;
+            }
+            console.log(`New department, ${param}, has been added!`)
+            console.table(rows);
+        });
 
-module.exports = deptsTable;
+    });
+};
+    
+module.exports = [deptsTable, newDept]
 

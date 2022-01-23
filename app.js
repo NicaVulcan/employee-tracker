@@ -1,7 +1,7 @@
-// const inquirer = require("inquirer");
-// const mysql = require("mysql2");
-// const db = require("./db/connection");
-const promptApp = require("./src/promptLogic");
 
+const promptApp = require("./src/promptLogic");
+const appName = require("./src/appName");
+
+console.log(appName);
 promptApp();
 
