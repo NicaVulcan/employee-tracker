@@ -5,7 +5,6 @@ CLI application for managing employee database, including viewing departments, r
 - [Built With](#built-with)
 - [Installation](#instalaltion)
 - [Usage](#usage)
-- [Tests](#tests)
 - [Walkthrough](#walkthrough)
 - [Contribution](#contribution)
 ## Built With
