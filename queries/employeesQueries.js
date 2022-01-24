@@ -3,6 +3,8 @@ const inquirer = require("inquirer");
 
 // View Employees table: employee id, first name, last name, role, dept, manager
 const staffTable = () => {
+    const promptApp = require("../src/promptLogic");
+
     const sql = `
     SELECT staff.id, staff.first_name, staff.last_name, roles.title AS role, departments.department_name AS department, managers.first_name AS manager
     FROM employees AS staff
@@ -18,38 +20,16 @@ const staffTable = () => {
             throw err;
         }
         console.table(rows);
+        promptApp();
     });
 };
 
 
 // Add employee: enter first name, last name, role, manager
-const newStaff = () => {
+const newStaff = (roleArr, empArr) => {
+    const promptApp = require("../src/promptLogic");
 
-    // Answer options for adding new employee's role
-    let roleList = () => {
-        let roleArr = [];
-        db.query(`SELECT title FROM roles`, (err, res) => {
-            for (let i = 0; i < res.length; i++) {
-                let role = res[i].title;
-                roleArr.push(role);
-            }
-        });
-        return roleArr;
-    };
-
-    // Answer options for adding new employee's manager
-    let mgrList = () => {
-        let mgrArr = [];
-        db.query(`SELECT first_name FROM employees`, (err, res) => {
-            for (let i = 0; i < res.length; i++) {
-                let mgr = res[i].first_name
-                mgrArr.push(mgr);
-            }
-        });
-        return mgrArr;
-    };
-
-    return inquirer
+    inquirer
         .prompt([
             {
                 type: "input",
@@ -79,13 +59,13 @@ const newStaff = () => {
                 type: "list",
                 name: "role",
                 message: "New employee title:",
-                choices: roleList()
+                choices: roleArr
             },
             {
                 type: "list",
                 name: "mgr",
                 message: "New employee's manager:",
-                choices: mgrList()
+                choices: empArr
             }
         ])
         .then(answers => {
@@ -94,6 +74,8 @@ const newStaff = () => {
             const role = answers.role;
             const mgr = answers.mgr;
 
+            empArr.push(fName);
+
             const sql = `
                 INSERT INTO employees(first_name, last_name, role_id, manager_id)
                 VALUES(?, ?,
@@ -101,81 +83,59 @@ const newStaff = () => {
                     (SELECT emp.id FROM employees AS emp WHERE emp.first_name = ?))`;
             db.query(sql, [fName, lName, role, mgr], (err, result) => {
                 if (err) { throw err; };
-                console.log(`New employee ${fName} ${lName} has been added!`);
             });
             db.query(`SELECT id, first_name, last_name FROM employees`, (err, rows) => {
                 if (err) { throw err; };
                 console.table(rows);
+                console.log(`New employee ${fName} ${lName} has been added!`);
+                promptApp();
             });
         });
 };
 
 // Update employee: select employee -> update role
-const updateEmp = () => {
+const updateEmp = (roleArr, empArr) => {
+    const promptApp = require("../src/promptLogic");
 
-    // Answer options for selecting which employee to update
-    let empList = () => {
-        let empArr = [];
-        db.query(`SELECT first_name FROM employees`, (err, res) => {
-            for (let i = 0; i < res.length; i++) {
-                let emp = res[i].first_name
-                empArr.push(emp);
-            }
-        });
-        return empArr;
-
-    };
-
-    // Answer options for updating employee's role
-    let roleList = () => {
-        let roleArr = [];
-        db.query(`SELECT title FROM roles`, (err, res) => {
-            for (let i = 0; i < res.length; i++) {
-                let role = res[i].title;
-                roleArr.push(role);
-            }
-        });
-        return roleArr;
-    };
-
-    return inquirer
+    inquirer
         .prompt([
             {
                 type: "list",
                 name: "emp",
                 message: "Employee to update:",
-                choices: empList()
+                choices: empArr
             },
             {
                 type: "list",
                 name: "role",
                 message: "Employee's new title:",
-                choices: roleList()
+                choices: roleArr
             }
         ])
         .then(answers => {
-            console.log(answers);
+            let role = answers.role;
+            let emp = answers.emp;
 
-            // const sql = `
-            //     UPDATE employees
-            //     SET role_id = (SELECT id FROM roles WHERE title = ?) 
-            //     WHERE first_name = ?`;
-            // db.query(sql, [role, emp], (err, result) => {
-            //     if (err) { throw err; };
-            //     console.log(`${emp}'s role has been updated to ${role};`);
-            // });
-            // const sql2 = `
-            //     SELECT employees.id, employees.first_name, employees.last_name roles.title
-            //     FROM employees
-            //     LEFT JOIN roles
-            //     ON employees.role_id = roles.id
-            //     WHERE employees.first_name = ?;`
-            // db.query(sql2, emp, (err, rows) => {
-            //     if (err) { throw err; };
-            //     console.table(rows);
-            // })
-        })
+            const sql = `
+                UPDATE employees
+                SET role_id = (SELECT id FROM roles WHERE title = ?) 
+                WHERE first_name = ?`;
+            db.query(sql, [role, emp], (err, result) => {
+                if (err) { throw err; };
+                console.log(`${emp}'s role has been updated to ${role};`);
+            });
+            const sql2 = `
+                SELECT employees.id, employees.first_name, employees.last_name, roles.title
+                FROM employees
+                LEFT JOIN roles
+                ON employees.role_id = roles.id
+                WHERE employees.first_name = ?;`
+            db.query(sql2, emp, (err, rows) => {
+                if (err) { throw err; };
+                console.table(rows);
+                promptApp();
+            });
+        });
+};
 
-
-}
 module.exports = [staffTable, newStaff, updateEmp];

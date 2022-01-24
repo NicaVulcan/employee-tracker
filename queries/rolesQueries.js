@@ -3,6 +3,8 @@ const inquirer = require("inquirer");
 
 // View Roles table: role id, job title, dept role belongs to, salary
 const rolesTable = () => {
+    const promptApp = require("../src/promptLogic");
+    
     const sql = `
     SELECT roles.id, roles.title, departments.department_name AS department, roles.salary
     FROM roles
@@ -14,25 +16,15 @@ const rolesTable = () => {
             throw err;
         }
         console.table(rows);
-
+        promptApp();
     });
 };
 
 // Add role: enter name, salary, dept
-const newRole = () => {
+const newRole = (deptArr, roleArr) => {
+    const promptApp = require("../src/promptLogic");
 
-    // Answer options for adding new role's department
-    const deptList = () => {
-        let deptArr = [];
-        db.query(`SELECT department_name FROM departments`, (err, res) => {
-            for (let i = 0; i < res.length; i++) {
-                deptArr.push(res[i].department_name);
-            }
-        });
-        return deptArr;
-    };
-
-    return inquirer
+    inquirer
         .prompt([
             {
                 type: "input",
@@ -62,7 +54,7 @@ const newRole = () => {
                 type: "list",
                 name: "department",
                 message: "Department new role falls under:",
-                choices: deptList()
+                choices: deptArr
             }
         ])
         .then(answers => {
@@ -70,6 +62,8 @@ const newRole = () => {
             const salary = answers.salary;
             const department = answers.department;
 
+            roleArr.push(title);
+            
             const sql = `
                 INSERT INTO roles(title, salary, department_id) 
                 VALUES(?, ?, 
@@ -81,6 +75,7 @@ const newRole = () => {
             db.query(`SELECT id, title FROM roles;`, (err, rows) => {
                 if (err) {throw err;}
                 console.table(rows);
+                promptApp();
             });
         })
 };

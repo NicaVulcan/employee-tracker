@@ -3,6 +3,8 @@ const inquirer = require("inquirer");
 
 // View Departments table: dept id and dept names
 const deptsTable = () => {
+    const promptApp = require("../src/promptLogic");
+
     const sql = `SELECT * FROM departments`;
 
     db.query(sql, (err, rows) => {
@@ -10,12 +12,15 @@ const deptsTable = () => {
             throw err;
         }
         console.table(rows);
+        promptApp();
     });
 };
 
 // Add dept: enter dept name
-const newDept = (param) => {
-    return inquirer
+const newDept = (deptArr) => {
+    const promptApp = require("../src/promptLogic");
+
+    inquirer
     .prompt([
         {
             type: "input",
@@ -36,9 +41,11 @@ const newDept = (param) => {
         const sql = `
         INSERT INTO departments (department_name)
         VALUES (?);`;
-        const param = answer.deptName;
+        const dept = answer.deptName;
+        
+        deptArr.push(dept);
 
-        db.query(sql, param, (err, rows) => {
+        db.query(sql, dept, (err, rows) => {
             if (err) {
                 throw err;
             }
@@ -47,9 +54,9 @@ const newDept = (param) => {
                 if (err) {
                     throw err;
                 }
-                console.log(`New department, ${param}, has been added!`)
+                console.log(`New department, ${dept}, has been added!`)
                 console.table(rows);
-                return;
+                promptApp();
             });
         });
     });
