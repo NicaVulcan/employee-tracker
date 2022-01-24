@@ -27,7 +27,8 @@ From the repository directory, in the terminal, type the following:
 ```
 node app.js
 ```
-Choose t
+Choose an option
 ## Walkthrough
+[![Walkthrough video](./assets/employee-tracker.png)](https://drive.google.com/file/d/1Hz35Bf26F6Utcj8-qgf9dPZJIX29Rq_0/view?usp=sharing)
 ## Contribution
 Created by CSM
