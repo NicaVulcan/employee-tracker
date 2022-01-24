@@ -29,6 +29,8 @@ node app.js
 ```
 Choose an option
 ## Walkthrough
+Please click on the following image to view a demonstration of the application: 
+
 [![Walkthrough video](./assets/employee-tracker.png)](https://drive.google.com/file/d/1Hz35Bf26F6Utcj8-qgf9dPZJIX29Rq_0/view?usp=sharing)
 ## Contribution
 Created by CSM
