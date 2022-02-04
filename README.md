@@ -11,7 +11,8 @@ CLI application for managing employee database, including viewing departments, r
 -  Node.js
 - Inquirer
 - MySQL
-## InstallationTo install this application, the following steps must be taken:
+## Installation
+To install this application, the following steps must be taken:
 1. Install Node.js
 2. Clone this repository
 3. Access repository directory through terminal
